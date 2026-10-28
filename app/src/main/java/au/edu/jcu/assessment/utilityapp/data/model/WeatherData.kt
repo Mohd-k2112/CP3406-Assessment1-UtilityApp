@@ -75,4 +75,19 @@ data class WeatherData(
             temperatureCelsius < 15.0 -> "🧥 Cool weather! Wear a warm jacket or hoodie when heading outdoors."
             else -> "Enjoy your day!"
         }
+
+    val uvIndexCategory: String
+        get() = when {
+            temperatureCelsius >= 30.0 -> "High (Sun protection required)"
+            temperatureCelsius >= 24.0 -> "Moderate (Wear hat & sunscreen)"
+            else -> "Low (Comfortable outdoors)"
+        }
+
+    val comfortIndex: String
+        get() = when {
+            humidityPercent > 75 && temperatureCelsius > 28.0 -> "Humid & Tropical"
+            humidityPercent > 60 -> "Moderately Humid"
+            temperatureCelsius in 20.0..28.0 -> "Ideal Comfort"
+            else -> "Fresh & Mild"
+        }
 }
