@@ -47,7 +47,7 @@ fun UtilityScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(12.dp),
         contentAlignment = Alignment.Center,
     ) {
         when (uiState) {
@@ -95,11 +95,13 @@ private fun WeatherContent(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         // Hero Header Card
         ElevatedCard(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
             colors = CardDefaults.elevatedCardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ),
@@ -169,7 +171,9 @@ private fun WeatherContent(
         // Outdoor Activity Advice Card
         if (preferences.showOutdoorAdvice) {
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 ),
@@ -207,7 +211,9 @@ private fun WeatherContent(
 
         // Details Row Cards
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             if (preferences.showApparentTemp) {
@@ -238,7 +244,7 @@ private fun WeatherContent(
             }
         }
 
-        // Atmosphere & Comfort Conditions Card (Fills screen nicely)
+        // Atmosphere & Comfort Conditions Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
