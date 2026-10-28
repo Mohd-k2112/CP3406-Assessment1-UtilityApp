@@ -9,24 +9,22 @@
 
 ---
 
-## 📸 App Screenshots & Visual Showcase
-
-| Home Screen (Portrait) | Settings Screen |
-| :---: | :---: |
-| <img src="docs/images/home_screen_portrait.png" width="340" alt="Home Screen Portrait" /> | <img src="docs/images/settings_screen.png" width="340" alt="Settings Screen" /> |
-
-### 📱 Adaptive Landscape Mode
-<p align="center">
-  <img src="docs/images/home_screen_landscape.png" width="720" alt="Home Screen Landscape" />
-</p>
-
----
-
-## Overview
+## 📱 Project Overview
 
 **AuraWeather** is a modern, responsive, "at-a-glance" utility application built for Android. Designed specifically for university students, staff, and outdoors enthusiasts, AuraWeather delivers real-time weather metrics alongside intelligent outdoor activity recommendations tailored for campus life (e.g., JCU Townsville and Cairns campuses).
 
 The app leverages **Jetpack Compose** with **Material Design 3**, clean **MVVM architecture**, **StateFlow** state management, and real-time networking with **Retrofit** using the keyless, public **Open-Meteo Weather API**.
+
+### 📸 App Screenshots & Interface Showcase
+
+| App Logo | Home Screen (Portrait) | Settings Screen |
+| :---: | :---: | :---: |
+| <img src="docs/images/app_logo.png" width="220" alt="App Logo" /> | <img src="docs/images/home_screen_portrait.png" width="260" alt="Home Screen Portrait" /> | <img src="docs/images/settings_screen.png" width="260" alt="Settings Screen" /> |
+
+#### Adaptive Landscape Mode
+<p align="center">
+  <img src="docs/images/home_screen_landscape.png" width="720" alt="Home Screen Landscape" />
+</p>
 
 ---
 
