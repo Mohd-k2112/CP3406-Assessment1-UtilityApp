@@ -1,6 +1,7 @@
 package au.edu.jcu.assessment.utilityapp.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import au.edu.jcu.assessment.utilityapp.data.model.HourlyForecastItem
 import au.edu.jcu.assessment.utilityapp.data.model.UserPreferences
 import au.edu.jcu.assessment.utilityapp.data.model.WeatherData
 import au.edu.jcu.assessment.utilityapp.ui.theme.MobileTech_UtilityAppTheme
@@ -105,7 +107,7 @@ private fun WeatherContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             // Header Section
             Row(
@@ -163,6 +165,37 @@ private fun WeatherContent(
             }
 
             HorizontalDivider(color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f))
+
+            // Hourly Forecast Strip Section
+            if (weatherData.hourlyForecast.isNotEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = "Today's Forecast",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        weatherData.hourlyForecast.forEach { item ->
+                            HourlyTile(
+                                item = item,
+                                temperatureUnit = preferences.temperatureUnit,
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f))
+            }
 
             // Outdoor Activity Recommendation
             if (preferences.showOutdoorAdvice) {
@@ -265,6 +298,23 @@ private fun WeatherContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
+                        text = "Air Pressure:",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    )
+                    Text(
+                        text = "${weatherData.surfacePressureHpa.toInt()} hPa",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
                         text = "Comfort Level:",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
@@ -294,6 +344,40 @@ private fun WeatherContent(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun HourlyTile(
+    item: HourlyForecastItem,
+    temperatureUnit: au.edu.jcu.assessment.utilityapp.data.model.TemperatureUnit,
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.08f))
+            .padding(vertical = 10.dp, horizontal = 14.dp),
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = item.timeLabel,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+            )
+            Text(
+                text = item.icon,
+                fontSize = 20.sp,
+            )
+            Text(
+                text = item.formattedTemperature(temperatureUnit),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
         }
     }
 }
@@ -385,6 +469,14 @@ fun UtilityScreenSuccessPreview() {
                     weatherCode = 1,
                     windSpeedKmh = 14.5,
                     lastUpdatedIso = "2026-10-27T10:00",
+                    hourlyForecast = listOf(
+                        HourlyForecastItem("10:00", 28.5, 1),
+                        HourlyForecastItem("11:00", 29.1, 0),
+                        HourlyForecastItem("12:00", 30.0, 0),
+                        HourlyForecastItem("13:00", 30.5, 2),
+                        HourlyForecastItem("14:00", 29.8, 3),
+                        HourlyForecastItem("15:00", 28.9, 1),
+                    ),
                 ),
                 preferences = UserPreferences(),
             ),

@@ -1,12 +1,42 @@
 package au.edu.jcu.assessment.utilityapp.data.model
 
+data class HourlyForecastItem(
+    val timeLabel: String,
+    val temperatureCelsius: Double,
+    val weatherCode: Int,
+) {
+    fun formattedTemperature(unit: TemperatureUnit): String {
+        val temp = when (unit) {
+            TemperatureUnit.CELSIUS -> temperatureCelsius
+            TemperatureUnit.FAHRENHEIT -> (temperatureCelsius * 9 / 5) + 32
+        }
+        return "${temp.toInt()}${unit.symbol}"
+    }
+
+    val icon: String
+        get() = when (weatherCode) {
+            0 -> "☀️"
+            1, 2 -> "🌤️"
+            3 -> "☁️"
+            45, 48 -> "🌫️"
+            51, 53, 55, 56, 57 -> "🌦️"
+            61, 63, 65, 66, 67, 80, 81, 82 -> "🌧️"
+            71, 73, 75, 77, 85, 86 -> "❄️"
+            95, 96, 99 -> "⛈️"
+            else -> "🌡️"
+        }
+}
+
 data class WeatherData(
     val temperatureCelsius: Double,
     val apparentTemperatureCelsius: Double,
     val humidityPercent: Int,
     val weatherCode: Int,
     val windSpeedKmh: Double,
+    val surfacePressureHpa: Double = 1013.2,
+    val isDaytime: Boolean = true,
     val lastUpdatedIso: String,
+    val hourlyForecast: List<HourlyForecastItem> = emptyList(),
 ) {
     fun formattedTemperature(unit: TemperatureUnit): String {
         val temp = when (unit) {
@@ -53,8 +83,8 @@ data class WeatherData(
 
     val weatherIcon: String
         get() = when (weatherCode) {
-            0 -> "☀️"
-            1, 2 -> "🌤️"
+            0 -> if (isDaytime) "☀️" else "🌙"
+            1, 2 -> if (isDaytime) "🌤️" else "🌌"
             3 -> "☁️"
             45, 48 -> "🌫️"
             51, 53, 55, 56, 57 -> "🌦️"

@@ -11,7 +11,9 @@ interface OpenMeteoApiService {
     suspend fun getWeatherForecast(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("current") currentFields: String = "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+        @Query("current") currentFields: String = "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure,is_day",
+        @Query("hourly") hourlyFields: String = "temperature_2m,weather_code",
+        @Query("forecast_days") forecastDays: Int = 1,
     ): WeatherResponse
 
     companion object {
