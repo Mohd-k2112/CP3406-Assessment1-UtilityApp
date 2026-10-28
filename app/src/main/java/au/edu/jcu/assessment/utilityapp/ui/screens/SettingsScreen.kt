@@ -1,5 +1,6 @@
 package au.edu.jcu.assessment.utilityapp.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -25,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,173 +49,261 @@ fun SettingsScreen(
     onToggleWindSpeed: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-        Text(
-            text = "App Settings & Preferences",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-        )
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        // Location Section
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
+    if (isLandscape) {
+        Row(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            ) {
-                Text(
-                    text = "Location / City",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "Select your target campus or city",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    City.PRESET_CITIES.forEach { city ->
-                        FilterChip(
-                            selected = preferences.selectedCity.id == city.id,
-                            onClick = { onSelectCity(city) },
-                            label = { Text(city.name) },
-                        )
-                    }
-                }
-            }
-        }
-
-        // Units Section
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Text(
-                    text = "Display Units",
-                    style = MaterialTheme.typography.titleMedium,
+                    text = "App Settings",
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                 )
 
-                // Temperature Unit
-                Column {
-                    Text(
-                        text = "Temperature Unit",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
+                LocationCard(
+                    preferences = preferences,
+                    onSelectCity = onSelectCity,
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                UnitsCard(
+                    preferences = preferences,
+                    onSetTemperatureUnit = onSetTemperatureUnit,
+                    onSetWindSpeedUnit = onSetWindSpeedUnit,
+                )
+
+                DisplayCardsCard(
+                    preferences = preferences,
+                    onToggleOutdoorAdvice = onToggleOutdoorAdvice,
+                    onToggleApparentTemp = onToggleApparentTemp,
+                    onToggleHumidity = onToggleHumidity,
+                    onToggleWindSpeed = onToggleWindSpeed,
+                )
+            }
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            Text(
+                text = "App Settings & Preferences",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+            )
+
+            LocationCard(
+                preferences = preferences,
+                onSelectCity = onSelectCity,
+            )
+
+            UnitsCard(
+                preferences = preferences,
+                onSetTemperatureUnit = onSetTemperatureUnit,
+                onSetWindSpeedUnit = onSetWindSpeedUnit,
+            )
+
+            DisplayCardsCard(
+                preferences = preferences,
+                onToggleOutdoorAdvice = onToggleOutdoorAdvice,
+                onToggleApparentTemp = onToggleApparentTemp,
+                onToggleHumidity = onToggleHumidity,
+                onToggleWindSpeed = onToggleWindSpeed,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun LocationCard(
+    preferences: UserPreferences,
+    onSelectCity: (City) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            Text(
+                text = "Location / City",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = "Select your target campus or city",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                City.PRESET_CITIES.forEach { city ->
+                    FilterChip(
+                        selected = preferences.selectedCity.id == city.id,
+                        onClick = { onSelectCity(city) },
+                        label = { Text(city.name) },
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                        TemperatureUnit.entries.forEachIndexed { index, unit ->
-                            SegmentedButton(
-                                selected = preferences.temperatureUnit == unit,
-                                onClick = { onSetTemperatureUnit(unit) },
-                                shape = SegmentedButtonDefaults.itemShape(
-                                    index = index,
-                                    count = TemperatureUnit.entries.size,
-                                ),
-                            ) {
-                                Text("${unit.displayName} (${unit.symbol})")
-                            }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UnitsCard(
+    preferences: UserPreferences,
+    onSetTemperatureUnit: (TemperatureUnit) -> Unit,
+    onSetWindSpeedUnit: (WindSpeedUnit) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = "Display Units",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+
+            Column {
+                Text(
+                    text = "Temperature Unit",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                    TemperatureUnit.entries.forEachIndexed { index, unit ->
+                        SegmentedButton(
+                            selected = preferences.temperatureUnit == unit,
+                            onClick = { onSetTemperatureUnit(unit) },
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = TemperatureUnit.entries.size,
+                            ),
+                        ) {
+                            Text("${unit.displayName} (${unit.symbol})")
                         }
                     }
                 }
+            }
 
-                HorizontalDivider()
+            HorizontalDivider()
 
-                // Wind Speed Unit
-                Column {
-                    Text(
-                        text = "Wind Speed Unit",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                        WindSpeedUnit.entries.forEachIndexed { index, unit ->
-                            SegmentedButton(
-                                selected = preferences.windSpeedUnit == unit,
-                                onClick = { onSetWindSpeedUnit(unit) },
-                                shape = SegmentedButtonDefaults.itemShape(
-                                    index = index,
-                                    count = WindSpeedUnit.entries.size,
-                                ),
-                            ) {
-                                Text("${unit.displayName} (${unit.symbol})")
-                            }
+            Column {
+                Text(
+                    text = "Wind Speed Unit",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                    WindSpeedUnit.entries.forEachIndexed { index, unit ->
+                        SegmentedButton(
+                            selected = preferences.windSpeedUnit == unit,
+                            onClick = { onSetWindSpeedUnit(unit) },
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = WindSpeedUnit.entries.size,
+                            ),
+                        ) {
+                            Text("${unit.displayName} (${unit.symbol})")
                         }
                     }
                 }
             }
         }
+    }
+}
 
-        // Feature Toggles Section
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            ),
+@Composable
+private fun DisplayCardsCard(
+    preferences: UserPreferences,
+    onToggleOutdoorAdvice: (Boolean) -> Unit,
+    onToggleApparentTemp: (Boolean) -> Unit,
+    onToggleHumidity: (Boolean) -> Unit,
+    onToggleWindSpeed: (Boolean) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Text(
-                    text = "Display Cards",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                )
+            Text(
+                text = "Display Cards",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
 
-                ToggleRow(
-                    label = "Show Outdoor Advice Card",
-                    checked = preferences.showOutdoorAdvice,
-                    onCheckedChange = onToggleOutdoorAdvice,
-                )
+            ToggleRow(
+                label = "Show Outdoor Advice Card",
+                checked = preferences.showOutdoorAdvice,
+                onCheckedChange = onToggleOutdoorAdvice,
+            )
 
-                ToggleRow(
-                    label = "Show 'Feels Like' Temperature",
-                    checked = preferences.showApparentTemp,
-                    onCheckedChange = onToggleApparentTemp,
-                )
+            ToggleRow(
+                label = "Show 'Feels Like' Temperature",
+                checked = preferences.showApparentTemp,
+                onCheckedChange = onToggleApparentTemp,
+            )
 
-                ToggleRow(
-                    label = "Show Relative Humidity",
-                    checked = preferences.showHumidity,
-                    onCheckedChange = onToggleHumidity,
-                )
+            ToggleRow(
+                label = "Show Relative Humidity",
+                checked = preferences.showHumidity,
+                onCheckedChange = onToggleHumidity,
+            )
 
-                ToggleRow(
-                    label = "Show Wind Speed",
-                    checked = preferences.showWindSpeed,
-                    onCheckedChange = onToggleWindSpeed,
-                )
-            }
+            ToggleRow(
+                label = "Show Wind Speed",
+                checked = preferences.showWindSpeed,
+                onCheckedChange = onToggleWindSpeed,
+            )
         }
     }
 }
