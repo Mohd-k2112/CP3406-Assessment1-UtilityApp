@@ -3,6 +3,23 @@
 **CP3406 / CP5307 Assessment 1: Utility App**  
 **James Cook University (JCU)**
 
+<p align="center">
+  <img src="docs/images/app_logo.png" width="180" alt="AuraWeather App Logo" />
+</p>
+
+---
+
+## 📸 App Screenshots & Visual Showcase
+
+| Home Screen (Portrait) | Settings Screen |
+| :---: | :---: |
+| <img src="docs/images/home_screen_portrait.png" width="340" alt="Home Screen Portrait" /> | <img src="docs/images/settings_screen.png" width="340" alt="Settings Screen" /> |
+
+### 📱 Adaptive Landscape Mode
+<p align="center">
+  <img src="docs/images/home_screen_landscape.png" width="720" alt="Home Screen Landscape" />
+</p>
+
 ---
 
 ## Overview
@@ -17,9 +34,12 @@ The app leverages **Jetpack Compose** with **Material Design 3**, clean **MVVM a
 
 ### 1. Main Utility Screen (`UtilityScreen`)
 - **At-a-Glance Hero Card**: Displays current city name, campus description, real-time temperature, condition emoji, WMO weather condition text, and a manual refresh button.
+- **Today's 6-Hour Forecast Strip**: Scrollable forecast showing hourly time labels (`10:00`, `11:00`, `12:00`), condition icons ☀️/🌤️/🌧️, and hourly temperatures.
 - **Contextual Outdoor Recommendation Card**: Generates smart recommendations based on real-time temperature and weather code (e.g., UV sunscreen and hydration warnings for hot Townsville days, umbrella callouts for rain, or pleasant study-outside suggestions).
 - **Detail Metrics Grid**: Shows "Feels Like" apparent temperature, relative humidity percentage, and wind speed in customizable units.
-- **Graceful Lifecycle States**: Seamlessly handles `Loading` (animated progress indicator), `Success` (cards display), and `Error` (friendly retry card) states.
+- **Atmosphere & Environment Section**: Displays UV Index advice, Air Pressure (`hPa`), Comfort Level, and Last Updated timestamp.
+- **Adaptive Dual Orientation**: Renders a single-surface dashboard in Portrait and automatically switches to an adaptive 2-Column layout in Landscape mode.
+- **Graceful Lifecycle States**: Seamlessly handles `Loading` (animated progress indicator), `Success` (dashboard display), and `Error` (friendly retry card) states.
 
 ### 2. Settings & Preferences Screen (`SettingsScreen`)
 - **Campus & City Location Selector**: Instant switching between preset cities including JCU Townsville, JCU Cairns, Brisbane, Sydney, Melbourne, JCU Singapore, Tokyo, London, and New York.
